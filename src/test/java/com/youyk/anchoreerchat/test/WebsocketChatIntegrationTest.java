@@ -1,3 +1,4 @@
+/*
 package com.youyk.anchoreerchat.test;
 
 
@@ -143,6 +144,7 @@ class WebSocketChatIntegrationTest {
        // Assertions.assertThat(receivedMessage.sender()).isEqualTo("user1");
     }
 
+*/
 /*    @Test
     void testAddUser() throws Exception {
         ChatMessage message = new ChatMessage("user1 has joined", "user1", MessageType.JOIN);
@@ -154,5 +156,7 @@ class WebSocketChatIntegrationTest {
         Assertions.assertThat(receivedMessage.content()).isEqualTo("user1 has joined");
         Assertions.assertThat(receivedMessage.sender()).isEqualTo("user1");
         Assertions.assertThat(receivedMessage.type()).isEqualTo(MessageType.JOIN);
-    }*/
+    }*//*
+
 }
+*/

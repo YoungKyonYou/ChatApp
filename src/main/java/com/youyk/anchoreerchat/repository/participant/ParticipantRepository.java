@@ -19,8 +19,8 @@ public interface ParticipantRepository extends JpaRepository<Participant, Long> 
                 ON c.roomId = p.chatRoomId
          LEFT JOIN Member m
                 ON m.memberId = p.memberId
+             WHERE m.loginDateTime >= :thirtyMinutesAgo
              GROUP BY p.chatRoomId
-            HAVING m.loginDateTime >= :thirtyMinutesAgo
              ORDER BY count(m)
               DESC
                """)

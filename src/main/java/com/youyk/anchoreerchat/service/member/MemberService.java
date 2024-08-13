@@ -4,6 +4,6 @@ import com.youyk.anchoreerchat.common.response.DataResponse;
 import com.youyk.anchoreerchat.entity.member.Member;
 
 public interface MemberService {
-    DataResponse findMemberCountByLoginDateTimeWithin30Minutes();
+    DataResponse<Integer> findMemberCountByLoginDateTimeWithin30Minutes();
     Member findById(final Long id);
 }
