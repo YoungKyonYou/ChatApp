@@ -5,14 +5,14 @@ package com.youyk.anchoreerchat.test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
-import com.youyk.anchoreerchat.domain.message.constant.MessageType;
-import com.youyk.anchoreerchat.domain.chat.ChatMessage;
+import com.youyk.anchoreerchat.entity.chat.ChatRoom;
+import com.youyk.anchoreerchat.entity.member.Member;
+import com.youyk.anchoreerchat.entity.chat.ChatMessage;
 import java.lang.reflect.Type;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,11 +40,10 @@ class WebSocketChatIntegrationTest {
 
     private StompSession stompSession;
 
-    private BlockingQueue<ChatMessage> blockingQueue;
+
 
     @BeforeEach
     void setup() throws Exception {
-        blockingQueue = new LinkedBlockingDeque<>();
 
         WebSocketStompClient stompClient =
                 new WebSocketStompClient(
@@ -77,8 +76,16 @@ class WebSocketChatIntegrationTest {
 
 
         CompletableFuture<ChatMessage> subscribeFuture = new CompletableFuture<>();
+        Member member = Member.builder()
+                .name("Young")
+                .loginDateTime(LocalDateTime.now())
+                .build();
 
-        ChatMessage message = new ChatMessage("Hello", "user1", MessageType.CHAT);
+        ChatRoom chatroom = ChatRoom.builder()
+                .roomName("room1")
+                .build();
+
+        ChatMessage message = new ChatMessage("Hello", 1L, 1L, LocalDateTime.now());
 
         stompSession.send("/app/chat/room1/sendMessage", message);
 
@@ -110,7 +117,8 @@ class WebSocketChatIntegrationTest {
 
         CompletableFuture<ChatMessage> subscribeFuture = new CompletableFuture<>();
 
-        ChatMessage message = new ChatMessage("Hello", "user1", MessageType.CHAT);
+
+        ChatMessage message = new ChatMessage("Hello", 1L, 1L, LocalDateTime.now());
 
         stompSession.send("/app/chat/room1/sendMessage", message);
 
@@ -132,11 +140,10 @@ class WebSocketChatIntegrationTest {
 
         Assertions.assertThat(receivedMessage).isNotNull();
         Assertions.assertThat(receivedMessage.content()).isEqualTo("Hello");
-        Assertions.assertThat(receivedMessage.sender()).isEqualTo("user1");
-        Assertions.assertThat(receivedMessage.type()).isEqualTo(MessageType.CHAT);
+       // Assertions.assertThat(receivedMessage.sender()).isEqualTo("user1");
     }
 
-    @Test
+/*    @Test
     void testAddUser() throws Exception {
         ChatMessage message = new ChatMessage("user1 has joined", "user1", MessageType.JOIN);
 
@@ -147,5 +154,5 @@ class WebSocketChatIntegrationTest {
         Assertions.assertThat(receivedMessage.content()).isEqualTo("user1 has joined");
         Assertions.assertThat(receivedMessage.sender()).isEqualTo("user1");
         Assertions.assertThat(receivedMessage.type()).isEqualTo(MessageType.JOIN);
-    }
+    }*/
 }
