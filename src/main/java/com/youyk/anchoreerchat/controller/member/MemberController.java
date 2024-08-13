@@ -16,7 +16,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @GetMapping("/recent-login/count")
-    public ResponseEntity<DataResponse> getRecentLoginMemberCount() {
+    public ResponseEntity<DataResponse<Integer>> getRecentLoginMemberCount() {
         return ResponseEntity.status(HttpStatus.OK).body(memberService.findMemberCountByLoginDateTimeWithin30Minutes());
     }
 }
