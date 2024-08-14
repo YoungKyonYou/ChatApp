@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Table(name = "CHAT_ROOM_MEMBER")
 @Entity
 public class ChatRoomMember {
     @GeneratedValue

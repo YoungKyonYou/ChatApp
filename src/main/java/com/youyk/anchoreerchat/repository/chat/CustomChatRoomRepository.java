@@ -1,10 +1,12 @@
 package com.youyk.anchoreerchat.repository.chat;
 
-import com.youyk.anchoreerchat.dto.chat.ChatMessageDto;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
+import com.youyk.anchoreerchat.dto.chat.ChatRoomDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 public interface CustomChatRoomRepository {
-    Slice<ChatMessageDto> findPastChatRoomMessagesByRoomId(final Pageable pageRequest, final Long roomId);
+    List<ChatRoomDto> findChatRoomByMemberLoginDateTimeOrderByMemberCountDesc(LocalDateTime thirtyMinutesAgo);
 }

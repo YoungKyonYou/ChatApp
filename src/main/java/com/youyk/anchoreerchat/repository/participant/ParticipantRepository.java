@@ -12,18 +12,7 @@ import java.util.List;
 
 @Repository
 public interface ParticipantRepository extends JpaRepository<Participant, Long> {
-    @Query("""
-            SELECT c
-              FROM Participant p
-         LEFT JOIN ChatRoom c
-                ON c.roomId = p.chatRoomId
-         LEFT JOIN Member m
-                ON m.memberId = p.memberId
-             WHERE m.loginDateTime >= :thirtyMinutesAgo
-             GROUP BY p.chatRoomId
-             ORDER BY count(m)
-              DESC
-               """)
-    List<ChatRoom> findChatRoomByMemberLoginDateTimeOrderByMemberCountDesc(@Param("thirtyMinutesAgo") LocalDateTime thirtyMinutesAgo);
+
+    List<Participant> findByChatRoomId(Long roomId);
 
 }

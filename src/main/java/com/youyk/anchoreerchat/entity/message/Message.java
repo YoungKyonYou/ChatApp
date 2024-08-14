@@ -1,9 +1,7 @@
 package com.youyk.anchoreerchat.entity.message;
 
 import com.youyk.anchoreerchat.entity.chat.ChatMessage;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -13,6 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Table(name = "MESSAGE")
 @Entity
 public class Message {
     @GeneratedValue

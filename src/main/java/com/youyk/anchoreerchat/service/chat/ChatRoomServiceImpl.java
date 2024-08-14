@@ -1,5 +1,7 @@
 package com.youyk.anchoreerchat.service.chat;
 
+import com.youyk.anchoreerchat.common.response.DataResponse;
+import com.youyk.anchoreerchat.dto.chat.ChatRoomDto;
 import com.youyk.anchoreerchat.entity.chat.ChatRoom;
 import com.youyk.anchoreerchat.entity.participant.Participant;
 import com.youyk.anchoreerchat.repository.chat.ChatRoomRepository;
@@ -28,5 +30,11 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                         .build())
                 .toList();
         participantRepository.saveAll(participants);
+    }
+
+    @Override
+    public DataResponse<List<ChatRoomDto>> getChatRoomByRecentLoginMember() {
+        final LocalDateTime thirtyMinutesAgo = LocalDateTime.now().minusMinutes(30);
+        return DataResponse.from(chatRoomRepository.findChatRoomByMemberLoginDateTimeOrderByMemberCountDesc(thirtyMinutesAgo));
     }
 }
