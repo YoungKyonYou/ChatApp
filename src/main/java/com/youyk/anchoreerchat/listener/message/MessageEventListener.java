@@ -21,10 +21,9 @@ public class MessageEventListener {
     @Async
     @EventListener
     public void saveMessage(final ChatMessage receivedMessage) {
-        final Message message = Message.from(receivedMessage);
-        Message save = messageRepository.save(Message.from(receivedMessage));
-
-        final ChatRoomMember chatRoomMember = ChatRoomMember.of(receivedMessage.senderId(), receivedMessage.chatRoomId(), save);
+        //채팅 메시지 저장
+        final Message message = messageRepository.save(Message.from(receivedMessage));
+        final ChatRoomMember chatRoomMember = ChatRoomMember.of(receivedMessage.senderId(), receivedMessage.chatRoomId(), message);
         chatRoomMemberRepository.save(chatRoomMember);
     }
 }

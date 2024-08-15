@@ -1,39 +1,9 @@
-/*CREATE TABLE chat_room (
-                           room_id BIGINT NOT NULL,
-                           room_name VARCHAR(255),
-                           PRIMARY KEY (room_id)
-);
-CREATE TABLE chat_room_member (
-                                  chat_room_member_id BIGINT NOT NULL,
-                                  chat_room_id BIGINT,
-                                  created_at TIMESTAMP,
-                                  sender_id BIGINT,
-                                  message_id BIGINT,
-                                  PRIMARY KEY (chat_room_member_id)
-);
+DELETE chat_room_member;
+DELETE chat_room;
+DELETE member;
+DELETE message;
+DELETE participant;
 
-CREATE TABLE member (
-                        member_id BIGINT NOT NULL,
-                        login_date_time TIMESTAMP,
-                        name VARCHAR(255),
-                        PRIMARY KEY (member_id)
-);
-
-CREATE TABLE message (
-                         message_id BIGINT NOT NULL,
-                         content VARCHAR(255),
-                         created_at TIMESTAMP,
-                         updated_at TIMESTAMP,
-                         PRIMARY KEY (message_id)
-);
-
-CREATE TABLE participant (
-                             participant_id BIGINT NOT NULL,
-                             chat_room_id BIGINT,
-                             joined_date_time TIMESTAMP,
-                             member_id BIGINT,
-                             PRIMARY KEY (participant_id)
-);*/
 
 INSERT INTO chat_room (room_id, room_name) VALUES (1, 'General');
 INSERT INTO chat_room (room_id, room_name) VALUES (2, 'Development');
@@ -182,8 +152,8 @@ DROP SEQUENCE IF EXISTS message_seq;
 DROP SEQUENCE IF EXISTS participant_seq;
 
 -- 새로운 시퀀스 생성
-CREATE SEQUENCE chat_room_member_seq START WITH 81 INCREMENT BY 1;
-CREATE SEQUENCE chat_room_seq START WITH 53 INCREMENT BY 1;
-CREATE SEQUENCE member_seq START WITH 63 INCREMENT BY 1;
-CREATE SEQUENCE message_seq START WITH 81 INCREMENT BY 1;
-CREATE SEQUENCE participant_seq START WITH 62 INCREMENT BY 1;
+CREATE SEQUENCE chat_room_member_seq START WITH 81 INCREMENT BY 50;
+CREATE SEQUENCE chat_room_seq START WITH 53 INCREMENT BY 50;
+CREATE SEQUENCE member_seq START WITH 63 INCREMENT BY 50;
+CREATE SEQUENCE message_seq START WITH 81 INCREMENT BY 50;
+CREATE SEQUENCE participant_seq START WITH 62 INCREMENT BY 50;

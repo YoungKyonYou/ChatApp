@@ -1,4 +1,4 @@
-package com.youyk.anchoreerchat.test;
+package com.youyk.anchoreerchat.websocket;
 
 
 
@@ -8,6 +8,7 @@ import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import com.youyk.anchoreerchat.entity.chat.ChatRoom;
 import com.youyk.anchoreerchat.entity.member.Member;
 import com.youyk.anchoreerchat.entity.chat.ChatMessage;
+import com.youyk.anchoreerchat.util.DatabaseCleaner;
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
@@ -24,6 +26,9 @@ import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.socket.WebSocketHttpHeaders;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
@@ -36,14 +41,16 @@ import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 class WebSocketChatIntegrationTest {
     @LocalServerPort
     private int port;
-
-
     private StompSession stompSession;
+    @Autowired
+    DatabaseCleaner databaseCleaner;
+
 
 
 
     @BeforeEach
     void setup() throws Exception {
+        databaseCleaner.clear();
 
         WebSocketStompClient stompClient =
                 new WebSocketStompClient(
@@ -62,28 +69,21 @@ class WebSocketChatIntegrationTest {
         String url = String.format("ws://localhost:%d/ws-chat", port);
         StompHeaders stompHeaders = new StompHeaders();
 
-        stompSession = stompClient.connect(url, new WebSocketHttpHeaders(), stompHeaders, new StompSessionHandlerAdapter() {
-            @Override
-            public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
-                System.out.println("Connected to WebSocket server");
-            }
+        stompSession = stompClient.connectAsync(url, new WebSocketHttpHeaders(), stompHeaders,
+                new StompSessionHandlerAdapter() {
+                    @Override
+                    public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
+                        System.out.println("Connected to WebSocket server");
+                    }
 
-            @Override
-            public void handleTransportError(StompSession session, Throwable exception) {
-                System.err.println("WebSocket transport error: " + exception.getMessage());
-            }
-        }).get(2, TimeUnit.SECONDS);
+                    @Override
+                    public void handleTransportError(StompSession session, Throwable exception) {
+                        System.err.println("WebSocket transport error: " + exception.getMessage());
+                    }
+                }).get(2, TimeUnit.SECONDS);
 
 
         CompletableFuture<ChatMessage> subscribeFuture = new CompletableFuture<>();
-        Member member = Member.builder()
-                .name("Young")
-                .loginDateTime(LocalDateTime.now())
-                .build();
-
-        ChatRoom chatroom = ChatRoom.builder()
-                .roomName("room1")
-                .build();
 
         ChatMessage message = new ChatMessage("Hello", 1L, 1L, LocalDateTime.now());
 
@@ -105,7 +105,7 @@ class WebSocketChatIntegrationTest {
     }
 
     @Test
-    void testSendMessage() throws Exception {
+    void 웹소켓을_통해_메시지가_정상적으로_송수신됩니다() throws Exception {
 
         CompletableFuture<ChatMessage> subscribeFuture = new CompletableFuture<>();
 
@@ -133,18 +133,5 @@ class WebSocketChatIntegrationTest {
         Assertions.assertThat(receivedMessage).isNotNull();
         Assertions.assertThat(receivedMessage.content()).isEqualTo("Hello");
     }
-
-/*    @Test
-    void testAddUser() throws Exception {
-        ChatMessage message = new ChatMessage("user1 has joined", "user1", MessageType.JOIN);
-
-        stompSession.send("/app/chat/room1/addUser", message);
-
-        ChatMessage receivedMessage = blockingQueue.poll(3, TimeUnit.SECONDS);
-        Assertions.assertThat(receivedMessage).isNotNull();
-        Assertions.assertThat(receivedMessage.content()).isEqualTo("user1 has joined");
-        Assertions.assertThat(receivedMessage.sender()).isEqualTo("user1");
-        Assertions.assertThat(receivedMessage.type()).isEqualTo(MessageType.JOIN);
-    }*/
 
 }

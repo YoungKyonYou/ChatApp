@@ -18,7 +18,9 @@ public class MemberServiceImpl implements MemberService{
     @Transactional(readOnly = true)
     @Override
     public DataResponse<Integer> findMemberCountByLoginDateTimeWithin30Minutes() {
+        //현재 시간으로부터 30분 이전 시간
         final LocalDateTime thirtyMinutesAgo = LocalDateTime.now().minusMinutes(30);
+        //30분 이내 로그인한 회원 수 반환
         return DataResponse.from(memberRepository.findMemberByLoginDateTimeWithIn30Minutes(thirtyMinutesAgo));
     }
 

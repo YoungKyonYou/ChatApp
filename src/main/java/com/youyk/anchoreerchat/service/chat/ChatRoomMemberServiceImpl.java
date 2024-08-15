@@ -18,7 +18,9 @@ public class ChatRoomMemberServiceImpl implements ChatRoomMemberService {
     @Transactional(readOnly = true)
     @Override
     public DataResponse<Slice<ChatMessageDto>> getChatRoomMessages(final PageableRequest pageRequest, final Long roomId) {
+        //슬라이싱을 위한 PageRequest 생성
         final PageRequest pageable = PageRequest.of(pageRequest.page(), pageRequest.size());
+        //pageRequest에 해당하는 만큼 과거 채팅 내역 반환
         final Slice<ChatMessageDto> pastMessagesSlice = chatRoomMemberRepository.findPastChatRoomMessagesByRoomId(pageable, roomId);
         return DataResponse.from(pastMessagesSlice);
     }

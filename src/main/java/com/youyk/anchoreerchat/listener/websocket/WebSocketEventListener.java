@@ -1,37 +1,43 @@
 package com.youyk.anchoreerchat.listener.websocket;
 
+import com.youyk.anchoreerchat.entity.chat.ChatMessage;
+import com.youyk.anchoreerchat.entity.member.Member;
 import com.youyk.anchoreerchat.service.member.MemberService;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
+import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class WebSocketEventListener {
 
-    private static final Logger logger = LoggerFactory.getLogger(WebSocketEventListener.class);
     private final SimpMessageSendingOperations messagingTemplate;
     private final MemberService memberService;
 
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectedEvent event) {
-        logger.info("Received a new web socket connection");
+        log.info("Received a new web socket connection");
     }
 
-/*    @EventListener
+    @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
 
         Long memberId = (Long) headerAccessor.getSessionAttributes().get("memberId");
         Member member = memberService.findById(memberId);
         if(Objects.nonNull(member)) {
-            ChatMessage chatMessage = new ChatMessage("USER LEAVED", member, MessageType.LEAVE);
+            //   ChatMessage chatMessage = new ChatMessage("USER LEAVED", member, MessageType.LEAVE);
 
-            messagingTemplate.convertAndSend("/topic/public", chatMessage);
+            // messagingTemplate.convertAndSend("/topic/public", chatMessage);
         }
-    }*/
+    }
 }

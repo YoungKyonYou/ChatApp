@@ -20,8 +20,8 @@ class MemberServiceImplTest {
     @Test
     void 삼십분_내_접속자_수를_정상적으로_반환합니다() {
         //when
-        DataResponse<Integer> memberCountByLoginDateTimeWithin30Minutes = memberService.findMemberCountByLoginDateTimeWithin30Minutes();
-        Integer memberCount = memberCountByLoginDateTimeWithin30Minutes.data();
+        final DataResponse<Integer> memberCountByLoginDateTimeWithin30Minutes = memberService.findMemberCountByLoginDateTimeWithin30Minutes();
+        final Integer memberCount = memberCountByLoginDateTimeWithin30Minutes.data();
 
         //then
         Assertions.assertEquals(6, memberCount);
@@ -35,7 +35,7 @@ class MemberServiceImplTest {
         memberRepository.save(member);
 
         //when
-        Member foundMember = memberService.findById(member.getMemberId());
+        final Member foundMember = memberService.findById(member.getMemberId());
 
         //then
         Assertions.assertAll(

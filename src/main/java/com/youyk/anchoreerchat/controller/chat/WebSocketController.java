@@ -20,14 +20,8 @@ public class WebSocketController {
     //서버가 /topic/messages로 메시지 전달
     @SendTo("/topic/{roomId}")
     public ChatMessage sendMessage(@DestinationVariable("roomId") String roomId, @Payload ChatMessage chatMessage) {
+        //EventPublisher를 통해 ChatMessage를 비동기로 저장
         publisher.publishEvent(chatMessage);
-        return chatMessage;
-    }
-
-    @MessageMapping("/chat/{roomId}/addUser")
-    @SendTo("/topic/{roomId}")
-    public ChatMessage addUser(@DestinationVariable("roomId") String roomId, @Payload ChatMessage chatMessage, SimpMessageHeaderAccessor headerAccessor) {
-        headerAccessor.getSessionAttributes().put("memberId", chatMessage.senderId());
         return chatMessage;
     }
 }

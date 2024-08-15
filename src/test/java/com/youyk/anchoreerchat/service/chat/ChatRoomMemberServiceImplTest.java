@@ -1,6 +1,7 @@
 package com.youyk.anchoreerchat.service.chat;
 
 
+import com.youyk.anchoreerchat.common.error.exception.DomainExceptionCode;
 import com.youyk.anchoreerchat.dto.chat.ChatMessageDto;
 import com.youyk.anchoreerchat.entity.chat.ChatRoom;
 import com.youyk.anchoreerchat.repository.chat.ChatRoomRepository;
@@ -24,20 +25,20 @@ class ChatRoomMemberServiceImplTest {
     @Test
     void 채팅방의_과거_메시지를_10개씩_정상적으로_불러옵니다() {
         //when
-        ChatRoom chatRoom = chatRoomRepository.findById(1L).orElseThrow(() -> new IllegalArgumentException("채팅방이 존재하지 않습니다."));
-        PageableRequest pageRequestFirst = PageableRequest.builder().page(0).size(10).build();
-        PageableRequest pageRequestSecond = PageableRequest.builder().page(1).size(10).build();
+        final ChatRoom chatRoom = chatRoomRepository.findById(1L).orElseThrow(() -> DomainExceptionCode.CHAT_ROOM_NOT_FOUND.newInstance(1L));
+        final PageableRequest pageRequestFirst = PageableRequest.builder().page(0).size(10).build();
+        final PageableRequest pageRequestSecond = PageableRequest.builder().page(1).size(10).build();
 
-        Slice<ChatMessageDto> chatRoomMessagesFirst = chatRoomMemberService.getChatRoomMessages(pageRequestFirst,
+        final Slice<ChatMessageDto> chatRoomMessagesFirst = chatRoomMemberService.getChatRoomMessages(pageRequestFirst,
                 chatRoom.getRoomId()).data();
-        Slice<ChatMessageDto> chatRoomMessagesSecond = chatRoomMemberService.getChatRoomMessages(pageRequestSecond,
+        final Slice<ChatMessageDto> chatRoomMessagesSecond = chatRoomMemberService.getChatRoomMessages(pageRequestSecond,
                 chatRoom.getRoomId()).data();
 
-        List<ChatMessageDto> contentFirst = chatRoomMessagesFirst.getContent();
-        boolean hasNextFirst = chatRoomMessagesFirst.hasNext();
+        final List<ChatMessageDto> contentFirst = chatRoomMessagesFirst.getContent();
+        final boolean hasNextFirst = chatRoomMessagesFirst.hasNext();
 
-        List<ChatMessageDto> contentSecond = chatRoomMessagesSecond.getContent();
-        boolean hasNextSecond = chatRoomMessagesFirst.hasNext();
+        final List<ChatMessageDto> contentSecond = chatRoomMessagesSecond.getContent();
+        final boolean hasNextSecond = chatRoomMessagesFirst.hasNext();
 
         //then
         Assertions.assertAll(

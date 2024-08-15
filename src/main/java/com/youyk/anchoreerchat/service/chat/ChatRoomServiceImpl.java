@@ -21,7 +21,10 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     @Transactional
     @Override
     public void createChatRoom(final String roomName, final List<Long> memberIds) {
+        //채팅방 생성
         final ChatRoom chatRoom = chatRoomRepository.save(ChatRoom.builder().roomName(roomName).build());
+
+
         final List<Participant> participants = memberIds.stream()
                 .map(m -> Participant.builder()
                         .chatRoomId(chatRoom.getRoomId())
@@ -29,12 +32,15 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                         .joinedDateTime(LocalDateTime.now())
                         .build())
                 .toList();
+        //채팅방 참여자 생성
         participantRepository.saveAll(participants);
     }
 
     @Override
     public DataResponse<List<ChatRoomDto>> getChatRoomByRecentLoginMember() {
+        //현재 시간으로부터 30분 전
         final LocalDateTime thirtyMinutesAgo = LocalDateTime.now().minusMinutes(30);
+        //30분 내에 접속한 사용자 수의 내림차순으로 채팅 목록 정렬
         return DataResponse.from(chatRoomRepository.findChatRoomByMemberLoginDateTimeOrderByMemberCountDesc(thirtyMinutesAgo));
     }
 }

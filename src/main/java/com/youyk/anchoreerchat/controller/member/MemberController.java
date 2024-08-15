@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
     private final MemberService memberService;
 
-    @GetMapping("/recent-login/count")
+    @GetMapping("/recently-active/count")
     public ResponseEntity<DataResponse<Integer>> getRecentLoginMemberCount() {
         return ResponseEntity.status(HttpStatus.OK).body(memberService.findMemberCountByLoginDateTimeWithin30Minutes());
     }

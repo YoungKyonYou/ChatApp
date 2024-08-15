@@ -21,21 +21,21 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequestMapping("/chat")
+@RequestMapping("/chats")
 @RequiredArgsConstructor
 @RestController
 public class ChatRoomController {
     private final ChatRoomService chatRoomService;
     @Operation(summary = "채팅방 생성 API", description = "요청된 채팅방 이름으로 채팅방 생성")
     @ApiResponse(responseCode = "201", description = "성공 시 Created Response 반환",content = @Content)
-    @PostMapping("/room")
+    @PostMapping("/rooms")
     public ResponseEntity<Void> createChatRoom(@RequestBody @Valid ChatRoomRequest request) {
         chatRoomService.createChatRoom(request.roomName(), request.memberIds());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @Operation(summary = "채팅 목록 반환 API", description = "30분 내에 접속한 사용자 수의 내림차순으로 채팅 목록 정렬")
-    @GetMapping("/recent-login/member/room/list")
+    @GetMapping("/room/recently-active")
     public ResponseEntity<DataResponse<List<ChatRoomDto>>> getChatRoomByRecentLoginMember() {
         return ResponseEntity.status(HttpStatus.OK).body(chatRoomService.getChatRoomByRecentLoginMember());
     }
