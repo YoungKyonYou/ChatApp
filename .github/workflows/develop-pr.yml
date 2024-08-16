@@ -26,7 +26,8 @@ jobs:
 
       - name: Build and run Docker Compose
         run: |
-          docker-compose -f src/main/resources/docker/docker-compose.yml up -d
+          cd src/main/resources/docker
+          docker-compose -f docker-compose.yml up -d
           docker image prune -f
 
       - name: Build with Gradle
