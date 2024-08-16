@@ -25,7 +25,7 @@ jobs:
         run: cd src/main/resources && pwd
         
       - name: Install Docker Compose
-        uses: my-org/install-docker-compose-action@v1
+        uses: ./.github/workflows/action.yml
         with:
           version: '1.29.2'
 
