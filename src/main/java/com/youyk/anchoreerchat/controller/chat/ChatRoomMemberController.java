@@ -20,7 +20,7 @@ public class ChatRoomMemberController {
 
 
     @Operation(summary = "과거 채팅 내역 반환 API", description = "과거 채팅 내역을 무한 스크롤 형식으로 반환 - Slice 사용")
-    @GetMapping("/room/{roomId}/messages")
+    @GetMapping("/room/{roomId}/past-messages")
     public ResponseEntity<DataResponse<Slice<ChatMessageDto>>> getPastChatRoomMessages(@ModelAttribute @Valid PageableRequest pageableRequest, @PathVariable @NotNull Long roomId) {
         return ResponseEntity.ok(chatRoomMemberService.getChatRoomMessages(pageableRequest, roomId));
     }

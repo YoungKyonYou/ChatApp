@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Clock;
 import java.util.List;
 
 @RequestMapping("/chats")
@@ -32,6 +33,12 @@ public class ChatRoomController {
     public ResponseEntity<Void> createChatRoom(@RequestBody @Valid ChatRoomRequest request) {
         chatRoomService.createChatRoom(request.roomName(), request.memberIds());
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @DeleteMapping("/rooms/{roomId}")
+    public ResponseEntity<Void> removeChatRoom(@PathVariable Long roomId) {
+        chatRoomService.removeChatRoom(roomId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @Operation(summary = "채팅 목록 반환 API", description = "30분 내에 접속한 사용자 수의 내림차순으로 채팅 목록 정렬")
