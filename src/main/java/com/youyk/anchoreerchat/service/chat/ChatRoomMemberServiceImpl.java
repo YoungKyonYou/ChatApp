@@ -1,6 +1,5 @@
 package com.youyk.anchoreerchat.service.chat;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.youyk.anchoreerchat.common.response.DataResponse;
 import com.youyk.anchoreerchat.dto.chat.ChatMessageDto;
 import com.youyk.anchoreerchat.repository.chat.ChatRoomMemberRepository;
@@ -25,14 +24,15 @@ public class ChatRoomMemberServiceImpl implements ChatRoomMemberService {
         final PageRequest pageable = PageRequest.of(pageRequest.page(), pageRequest.size());
 
         //캐싱된 메시지가 있다면 캐시된 메시지 반환
-        if(messageCacheService.hasCachedMessages(roomId, pageRequest)){
+        if (messageCacheService.hasCachedMessages(roomId, pageable)) {
             return DataResponse.from(messageCacheService.retrieveMessagesFromCache(roomId, pageable));
         }
 
         //pageRequest에 해당하는 만큼 과거 채팅 내역 반환
         final Slice<ChatMessageDto> pastMessagesSlice = chatRoomMemberRepository.findPastChatRoomMessagesByRoomId(pageable, roomId);
         //메세지 캐시에 저장
-        messageCacheService.cacheSliceMessages(pastMessagesSlice.getContent(), roomId, pastMessagesSlice.hasNext(), pageRequest);
+        messageCacheService.cacheSliceMessages(pastMessagesSlice.getContent(), roomId, pastMessagesSlice.hasNext(),
+                pageable);
         return DataResponse.from(pastMessagesSlice);
     }
 

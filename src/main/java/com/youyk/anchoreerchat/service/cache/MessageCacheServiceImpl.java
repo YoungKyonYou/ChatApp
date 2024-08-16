@@ -1,8 +1,10 @@
 package com.youyk.anchoreerchat.service.cache;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.youyk.anchoreerchat.dto.chat.ChatMessageDto;
 import com.youyk.anchoreerchat.dto.redis.message.ChatMessageCache;
-import com.youyk.anchoreerchat.request.page.PageableRequest;
+import com.youyk.anchoreerchat.dto.redis.message.ChatMessageCacheCollection;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
@@ -10,44 +12,39 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.time.ZoneOffset;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.IntStream;
-
 @RequiredArgsConstructor
 @Service
 public class MessageCacheServiceImpl implements MessageCacheService {
     private final RedisTemplate<String, Object> redisTemplate;
-    private String messageCacheKey = "messages:roomId:%s:page:%s:size:%s";
+    private final ObjectMapper objectMapper;
 
     @Override
-    public boolean hasCachedMessages(final Long roomId, final PageableRequest pageableRequest) {
-        messageCacheKey = String.format(messageCacheKey, roomId, pageableRequest.page(), pageableRequest.size());
-        return Boolean.TRUE.equals(redisTemplate.hasKey(messageCacheKey));
+    public boolean hasCachedMessages(final Long roomId, final PageRequest pageRequest) {
+        String messageCacheKey = "messages:roomId:%s";
+        String messageHashKey = "page:%s:size:%s";
+
+        messageCacheKey = String.format(messageCacheKey, roomId);
+        messageHashKey = String.format(messageHashKey, pageRequest.getPageNumber(), pageRequest.getPageSize());
+
+        return Boolean.TRUE.equals(redisTemplate.opsForHash().hasKey(messageCacheKey, messageHashKey));
     }
 
     @Override
     public Slice<ChatMessageDto> retrieveMessagesFromCache(final Long roomId, final PageRequest pageRequest) {
-        messageCacheKey = String.format(messageCacheKey, roomId, pageRequest.getPageNumber(), pageRequest.getPageSize());
+        String messageCacheKey = "messages:roomId:%s";
+        String messageHashKey = "page:%s:size:%s";
 
-        final List<ChatMessageDto> cachedMessages = Objects.requireNonNull(redisTemplate.opsForZSet().range(messageCacheKey, pageRequest.getPageNumber(), pageRequest.getPageSize())).stream()
-                .filter(Objects::nonNull)
-                .map((data) -> {
-                    ChatMessageCache chatMessageCache = (ChatMessageCache) data;
-                    return ChatMessageDto.builder()
-                            .content(chatMessageCache.content())
-                            .senderId(chatMessageCache.senderId())
-                            .senderName(chatMessageCache.senderName())
-                            .chatRoomId(chatMessageCache.chatRoomId())
-                            .chatRoomName(chatMessageCache.chatRoomName())
-                            .createdAt(chatMessageCache.createdAt())
-                            .build();
-                })
-                .toList();
+        messageCacheKey = String.format(messageCacheKey, roomId);
+        messageHashKey = String.format(messageHashKey, pageRequest.getPageNumber(), pageRequest.getPageSize());
 
-        return new SliceImpl<>(cachedMessages, pageRequest, false);
+        final ChatMessageCacheCollection cacheMessages = objectMapper.convertValue(
+                redisTemplate.opsForHash().get(messageCacheKey, messageHashKey), ChatMessageCacheCollection.class);
+
+        final List<ChatMessageDto> contents = ChatMessageDto.from(cacheMessages.chatMessageCaches());
+
+        final boolean hasNext = cacheMessages.hasNext();
+
+        return new SliceImpl<>(contents, pageRequest, hasNext);
     }
 
 
@@ -56,16 +53,17 @@ public class MessageCacheServiceImpl implements MessageCacheService {
             final List<ChatMessageDto> contents,
             final Long roomId,
             final boolean hasNext,
-            final PageableRequest pageableRequest
+            final PageRequest pageRequest
     ) {
-        messageCacheKey = String.format(messageCacheKey, roomId, pageableRequest.page(), pageableRequest.size());
+        String messageCacheKey = "messages:roomId:%s";
+        String messageHashKey = "page:%s:size:%s";
 
-        List<ChatMessageCache> chatMessageCaches = ChatMessageCache.of(contents, hasNext);
+        messageCacheKey = String.format(messageCacheKey, roomId);
+        messageHashKey = String.format(messageHashKey, pageRequest.getPageNumber(), pageRequest.getPageSize());
 
-        chatMessageCaches.forEach(data -> {
-                            long epochSeconds = data.createdAt().toInstant(ZoneOffset.UTC).toEpochMilli() / 1000;
-                            final double score = -(epochSeconds);
-                            redisTemplate.opsForZSet().add(messageCacheKey, data, score);
-                        });
+        final List<ChatMessageCache> messages = ChatMessageCache.of(contents);
+        final ChatMessageCacheCollection cacheMessages = ChatMessageCacheCollection.of(messages, hasNext);
+
+        redisTemplate.opsForHash().put(messageCacheKey, messageHashKey, cacheMessages);
     }
 }
