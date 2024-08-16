@@ -22,11 +22,11 @@ jobs:
         run: chmod +x gradlew
 
       - name: Check working directory
-        run: pwd
+        run: cd src/main/resources && pwd
 
       - name: Build and run Docker Compose
         run: |
-          docker-compose -f resources/docker/docker-compose.yml up -d
+          docker-compose -f src/main/resources/docker/docker-compose.yml up -d
           docker image prune -f
 
       - name: Build with Gradle
