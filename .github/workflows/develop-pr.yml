@@ -17,12 +17,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'adopt'
-      #서브모듈 업데이트
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          submodules: recursive
-          token: ${{ secrets.TOKEN }}
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
