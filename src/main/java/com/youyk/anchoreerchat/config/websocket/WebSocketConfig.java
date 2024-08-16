@@ -1,4 +1,4 @@
-package com.youyk.anchoreerchat.config;
+package com.youyk.anchoreerchat.config.websocket;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

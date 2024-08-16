@@ -1,6 +1,6 @@
 package com.youyk.anchoreerchat.repository.member;
 
-import com.youyk.anchoreerchat.config.QueryDSLConfig;
+import com.youyk.anchoreerchat.config.jpa.QueryDSLConfig;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

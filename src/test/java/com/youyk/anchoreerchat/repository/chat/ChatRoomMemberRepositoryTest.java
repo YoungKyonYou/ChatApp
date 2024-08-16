@@ -1,7 +1,7 @@
 package com.youyk.anchoreerchat.repository.chat;
 
 
-import com.youyk.anchoreerchat.config.QueryDSLConfig;
+import com.youyk.anchoreerchat.config.jpa.QueryDSLConfig;
 import com.youyk.anchoreerchat.dto.chat.ChatMessageDto;
 import com.youyk.anchoreerchat.request.page.PageableRequest;
 import org.junit.jupiter.api.Assertions;
