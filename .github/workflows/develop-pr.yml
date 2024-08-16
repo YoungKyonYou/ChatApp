@@ -21,6 +21,9 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Check working directory
+        run: pwd
+
       - name: Build and run Docker Compose
         run: |
           docker-compose -f resources/docker/docker-compose.yml up -d
