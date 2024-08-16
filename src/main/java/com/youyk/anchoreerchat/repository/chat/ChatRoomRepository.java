@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long>, CustomChatRoomRepository {
     Optional<ChatRoom> findByRoomName(String roomName);
+    void deleteByRoomName(String roomName);
 }

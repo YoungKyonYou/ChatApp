@@ -16,5 +16,8 @@ spring:
     hibernate:
       ddl-auto: update
       dialect: org.hibernate.dialect.H2Dialect
+  sql:
+    init:
+      mode: never
 server:
   port: 8080

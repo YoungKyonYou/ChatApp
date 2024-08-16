@@ -1,21 +1,15 @@
-package com.youyk.anchoreerchat.e2e;
-
-import static io.restassured.RestAssured.given;
+package com.youyk.anchoreerchat.e2e.chat;
 
 import com.youyk.anchoreerchat.common.error.exception.DomainExceptionCode;
-import com.youyk.anchoreerchat.common.response.DataResponse;
 import com.youyk.anchoreerchat.dto.chat.ChatRoomDto;
 import com.youyk.anchoreerchat.entity.chat.ChatRoom;
 import com.youyk.anchoreerchat.entity.participant.Participant;
 import com.youyk.anchoreerchat.repository.chat.ChatRoomRepository;
 import com.youyk.anchoreerchat.repository.participant.ParticipantRepository;
 import com.youyk.anchoreerchat.request.chat.ChatRoomRequest;
-import com.youyk.anchoreerchat.util.DatabaseCleaner;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import java.util.List;
 import org.apache.http.entity.ContentType;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,9 +18,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
+import java.util.List;
+
+import static io.restassured.RestAssured.given;
+
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class ChatRoomE2ETest {
     @LocalServerPort
@@ -37,12 +33,11 @@ public class ChatRoomE2ETest {
     @Autowired
     private ParticipantRepository participantRepository;
 
-    @Autowired
-    private DatabaseCleaner databaseCleaner;
     @BeforeEach
     void setup() {
         RestAssured.port = port;
     }
+
 
     @Test
     void E2E_30분_내에_접속한_사용자_수의_따라_채팅_목록을_정상적으로_반환합니다(){
@@ -56,11 +51,11 @@ public class ChatRoomE2ETest {
                 .log().all();
 
         final List<ChatRoomDto> data = response.jsonPath().getList("data", ChatRoomDto.class);
-
         Assertions.assertArrayEquals(
                 new Long[]{3L, 2L, 1L},
                 data.stream().map(ChatRoomDto::roomId).toArray());
     }
+
 
     @Test
     void E2E_채팅방이_정상적으로_생성됩니다(){
@@ -87,6 +82,19 @@ public class ChatRoomE2ETest {
         Assertions.assertArrayEquals(
                 new Long[]{1L, 2L},
                 participants.stream().map(Participant::getMemberId).toArray());
+
+        //after test
+        chatRoomRepository.delete(anchoreerRoom);
+        participantRepository.deleteAll(participants);
+
+        List<ChatRoom> all = chatRoomRepository.findAll();
+        System.out.println("all = " + all);
+    }
+
+    private void deleteChatRoom(final Long roomId) {
+        participantRepository.deleteByChatRoomId(roomId);
+        chatRoomRepository.deleteById(roomId);
+
     }
 
 }

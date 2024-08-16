@@ -1,30 +1,47 @@
 package com.youyk.anchoreerchat.service.member;
 
-import com.youyk.anchoreerchat.common.response.DataResponse;
 import com.youyk.anchoreerchat.entity.member.Member;
 import com.youyk.anchoreerchat.repository.member.MemberRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@Transactional
-@SpringBootTest
+import java.time.Clock;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+
+@ExtendWith(MockitoExtension.class)
 class MemberServiceImplTest {
-    @Autowired
+    @InjectMocks
+    private MemberServiceImpl memberService;
+    @Mock
     private MemberRepository memberRepository;
-    @Autowired
-    private MemberService memberService;
+
+    @Mock
+    private Clock clock;
 
     @Test
     void 삼십분_내_접속자_수를_정상적으로_반환합니다() {
+        //given
+        Instant now = Instant.now();
+        given(clock.instant()).willReturn(now);
+        given(clock.getZone()).willReturn(ZoneId.systemDefault());
+        LocalDateTime thirtyMinutesAgo = LocalDateTime.now(clock).minusMinutes(30);
+
+        given(memberRepository.findMemberByLoginDateTimeWithIn30Minutes(thirtyMinutesAgo)).willReturn(6);
         //when
-        final DataResponse<Integer> memberCountByLoginDateTimeWithin30Minutes = memberService.findMemberCountByLoginDateTimeWithin30Minutes();
-        final Integer memberCount = memberCountByLoginDateTimeWithin30Minutes.data();
+        final Integer memberCountByLoginDateTimeWithin30Minutes = memberService.findMemberCountByLoginDateTimeWithin30Minutes().data();
+        verify(memberRepository).findMemberByLoginDateTimeWithIn30Minutes(thirtyMinutesAgo);
 
         //then
-        Assertions.assertEquals(6, memberCount);
+        Assertions.assertEquals(6, memberCountByLoginDateTimeWithin30Minutes);
     }
 
     @Test
@@ -32,9 +49,10 @@ class MemberServiceImplTest {
         //given
         final String name = "Tom";
         final Member member = Member.builder().name(name).build();
-        memberRepository.save(member);
+        given(memberRepository.findById(member.getMemberId())).willReturn(java.util.Optional.of(member));
 
         //when
+        Member save = memberRepository.save(member);
         final Member foundMember = memberService.findById(member.getMemberId());
 
         //then

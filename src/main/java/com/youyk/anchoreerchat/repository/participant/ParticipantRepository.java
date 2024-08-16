@@ -13,6 +13,7 @@ import java.util.List;
 @Repository
 public interface ParticipantRepository extends JpaRepository<Participant, Long> {
 
-    List<Participant> findByChatRoomId(Long roomId);
+    List<Participant> findByChatRoomId(final Long roomId);
+    void deleteByChatRoomId(final Long roomId);
 
 }
