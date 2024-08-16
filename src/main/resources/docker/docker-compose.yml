@@ -1,0 +1,77 @@
+networks:
+  replica:
+    driver: bridge
+services:
+  redis:
+    container_name: redis
+    image: redis:6.2
+    restart: 'always'
+    ports:
+      - "6379:6379"
+    networks:
+      - replica
+    volumes:
+      - ./conf:/usr/local/etc/redis/
+      # Redis 서버를 실행할 때 사용되는 명령어입니다. 이 명령어는 Redis 서버를 구동하고 지정된 경로의 Redis 설정 파일(redis.conf)을 사용하여 구성
+    command: bash -c "apt-get update && apt-get install vim -y && redis-server /usr/local/etc/redis/redis.conf"
+  #    deploy:
+  #      resources:
+  #        limits:
+  #          memory: 512M
+  zookeeper:
+    image: confluentinc/cp-zookeeper
+    restart: 'always'
+    networks:
+      - replica
+    environment:
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+    ports:
+      - "2181:2181"
+
+  kafka1:
+    image: confluentinc/cp-kafka
+    restart: 'always'
+    hostname: kafka1
+    ports:
+      - "9093:9093"
+    networks:
+      - replica
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_BROKER_ID: 1
+      KAFKA_LOG_DIRS: "/var/lib/kafka/data"
+      #Kafka 브로커가 수신 대기할 주소 및 포트를 설정합니다.
+      #두 개의 리스너(LISTENER_DOCKER_INTERNAL, LISTENER_DOCKER_EXTERNAL)가 지정되어 있습니다.
+      #내부 리스너는 Docker 컨테이너 내부의 통신을 위해 포트 19091을 사용하며,
+      #외부 리스너는 호스트 IP 주소(또는 기본적으로 127.0.0.1)와 포트 9093을 사용합니다.
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka1:19091,PLAINTEXT_HOST://localhost:9093
+      #각 리스너에 사용할 보안 프로토콜을 설정합니다. 여기서는 두 리스너 모두 PLAINTEXT를 사용하도록 설정되어 있습니다.
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      #Kafka에서 사용되는 내부 토픽인 __consumer_offsets 토픽의 복제 개수를 설정합니다.
+      #이 경우에는 1로 설정
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      #Kafka 브로커 간에 사용되는 리스너를 설정합니다.
+      #여기서는 내부 리스너(LISTENER_DOCKER_INTERNAL)를 사용하도록 설정되어 있습니다.
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+
+  #    deploy:
+  #      resources:
+  #        limits:
+  #          memory: 512M
+  kafdrop:
+    image: obsidiandynamics/kafdrop
+    restart: 'always'
+    networks:
+      - replica
+    ports:
+      - "9000:9000"
+    environment:
+      KAFKA_BROKER_CONNECT: "kafka1:19091"
+    depends_on:
+      - kafka1

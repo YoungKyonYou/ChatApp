@@ -1,6 +1,22 @@
 spring:
   application:
     name: ScoreTracker
+  data:
+    redis:
+      time-to-live: 300 # 데이터 유지 시간(sec) 1시간
+      host: localhost
+      port: 6379
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9093
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+      auto-commit-interval: 10
+    producer:
+      bootstrap-servers: localhost:9093
+    backoff:
+      interval: 1000
+      max_failure: 3
   h2:
     console:
       enabled: true

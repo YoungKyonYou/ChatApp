@@ -1,6 +1,6 @@
 package com.youyk.anchoreerchat.repository.chat;
 
-import com.youyk.anchoreerchat.config.QueryDSLConfig;
+import com.youyk.anchoreerchat.config.jpa.QueryDSLConfig;
 import com.youyk.anchoreerchat.dto.chat.ChatRoomDto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
-import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 
