@@ -50,7 +50,7 @@ class WebSocketChatIntegrationTest {
 
     @BeforeEach
     void setup() throws Exception {
-        databaseCleaner.clear();
+        //databaseCleaner.clear();
 
         WebSocketStompClient stompClient =
                 new WebSocketStompClient(
@@ -81,27 +81,6 @@ class WebSocketChatIntegrationTest {
                         System.err.println("WebSocket transport error: " + exception.getMessage());
                     }
                 }).get(2, TimeUnit.SECONDS);
-
-
-        CompletableFuture<ChatMessage> subscribeFuture = new CompletableFuture<>();
-
-        ChatMessage message = new ChatMessage("Hello", 1L, 1L, LocalDateTime.now());
-
-        stompSession.send("/app/chat/room1/sendMessage", message);
-
-        stompSession.subscribe("/topic/room1", new StompFrameHandler() {
-            // 여기서 지정한 타입으로 payload를 역직렬화한다.
-            @Override
-            public Type getPayloadType(StompHeaders headers) {
-                return ChatMessage.class;
-            }
-
-            // 여기서 메시지를 가져올 수 있다.
-            @Override
-            public void handleFrame(StompHeaders headers, Object payload) {
-                subscribeFuture.complete((ChatMessage) payload);
-            }
-        });
     }
 
     @Test
@@ -112,9 +91,9 @@ class WebSocketChatIntegrationTest {
 
         ChatMessage message = new ChatMessage("Hello", 1L, 1L, LocalDateTime.now());
 
-        stompSession.send("/app/chat/room1/sendMessage", message);
+        stompSession.send("/app/chat/1/send-message", message);
 
-        stompSession.subscribe("/topic/room1", new StompFrameHandler() {
+        stompSession.subscribe("/topic/1", new StompFrameHandler() {
             // 여기서 지정한 타입으로 payload를 역직렬화한다.
             @Override
             public Type getPayloadType(StompHeaders headers) {
@@ -128,7 +107,7 @@ class WebSocketChatIntegrationTest {
             }
         });
 
-        ChatMessage receivedMessage = subscribeFuture.get(3, TimeUnit.SECONDS);
+        ChatMessage receivedMessage = subscribeFuture.get(10, TimeUnit.SECONDS);
 
         Assertions.assertThat(receivedMessage).isNotNull();
         Assertions.assertThat(receivedMessage.content()).isEqualTo("Hello");

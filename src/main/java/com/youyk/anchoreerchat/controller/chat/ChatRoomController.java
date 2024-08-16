@@ -42,7 +42,7 @@ public class ChatRoomController {
     }
 
     @Operation(summary = "채팅 목록 반환 API", description = "30분 내에 접속한 사용자 수의 내림차순으로 채팅 목록 정렬")
-    @GetMapping("/room/recently-active")
+    @GetMapping("/rooms/recently-active")
     public ResponseEntity<DataResponse<List<ChatRoomDto>>> getChatRoomByRecentLoginMember() {
         return ResponseEntity.status(HttpStatus.OK).body(chatRoomService.getChatRoomByRecentLoginMember());
     }

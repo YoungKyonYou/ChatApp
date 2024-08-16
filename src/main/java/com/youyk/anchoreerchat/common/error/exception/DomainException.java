@@ -8,12 +8,10 @@ public class DomainException extends BaseCustomException{
     private final String code;
 
     private final List<Object> args;
-    private final HttpStatus httpStatus;
 
-    public DomainException(final String code, final String message, final HttpStatus httpStatus, final Object... args) {
-        super(code, String.format(message, args), httpStatus);
+    public DomainException(final String code, final String message, final Object... args) {
+        super(code, String.format(message, args));
         this.code = code;
         this.args = Arrays.asList(args);
-        this.httpStatus = httpStatus;
     }
 }

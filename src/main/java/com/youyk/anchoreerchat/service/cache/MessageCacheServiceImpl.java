@@ -20,22 +20,17 @@ public class MessageCacheServiceImpl implements MessageCacheService {
 
     @Override
     public boolean hasCachedMessages(final Long roomId, final PageRequest pageRequest) {
-        String messageCacheKey = "messages:roomId:%s";
-        String messageHashKey = "page:%s:size:%s";
+        final String messageCacheKey = getCacheKey(roomId);
+        final String messageHashKey = getHashKey(pageRequest);
 
-        messageCacheKey = String.format(messageCacheKey, roomId);
-        messageHashKey = String.format(messageHashKey, pageRequest.getPageNumber(), pageRequest.getPageSize());
-
+        //캐싱이 되어 있는지 확인
         return Boolean.TRUE.equals(redisTemplate.opsForHash().hasKey(messageCacheKey, messageHashKey));
     }
 
     @Override
     public Slice<ChatMessageDto> retrieveMessagesFromCache(final Long roomId, final PageRequest pageRequest) {
-        String messageCacheKey = "messages:roomId:%s";
-        String messageHashKey = "page:%s:size:%s";
-
-        messageCacheKey = String.format(messageCacheKey, roomId);
-        messageHashKey = String.format(messageHashKey, pageRequest.getPageNumber(), pageRequest.getPageSize());
+        final String messageCacheKey = getCacheKey(roomId);
+        final String messageHashKey = getHashKey(pageRequest);
 
         final ChatMessageCacheCollection cacheMessages = objectMapper.convertValue(
                 redisTemplate.opsForHash().get(messageCacheKey, messageHashKey), ChatMessageCacheCollection.class);
@@ -44,6 +39,7 @@ public class MessageCacheServiceImpl implements MessageCacheService {
 
         final boolean hasNext = cacheMessages.hasNext();
 
+        //캐싱된 과거 메시지 반환
         return new SliceImpl<>(contents, pageRequest, hasNext);
     }
 
@@ -55,15 +51,21 @@ public class MessageCacheServiceImpl implements MessageCacheService {
             final boolean hasNext,
             final PageRequest pageRequest
     ) {
-        String messageCacheKey = "messages:roomId:%s";
-        String messageHashKey = "page:%s:size:%s";
+        final String messageCacheKey = getCacheKey(roomId);
+        final String messageHashKey = getHashKey(pageRequest);
 
-        messageCacheKey = String.format(messageCacheKey, roomId);
-        messageHashKey = String.format(messageHashKey, pageRequest.getPageNumber(), pageRequest.getPageSize());
 
         final List<ChatMessageCache> messages = ChatMessageCache.of(contents);
         final ChatMessageCacheCollection cacheMessages = ChatMessageCacheCollection.of(messages, hasNext);
 
+        //과거 메시지 캐싱
         redisTemplate.opsForHash().put(messageCacheKey, messageHashKey, cacheMessages);
+    }
+
+    private String getCacheKey(final Long roomId) {
+        return "messages:roomId:" + roomId;
+    }
+    private String getHashKey(final PageRequest pageRequest) {
+        return "page:" + pageRequest.getPageNumber() + ":size:" + pageRequest.getPageSize();
     }
 }

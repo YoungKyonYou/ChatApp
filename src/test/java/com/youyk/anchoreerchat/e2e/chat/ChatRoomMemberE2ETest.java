@@ -31,7 +31,7 @@ public class ChatRoomMemberE2ETest {
                 .all()
                 .when()
                 .contentType(ContentType.APPLICATION_JSON.toString())
-                .get("/chat/room/1/past-messages?page=0&size=10");
+                .get("/chats/rooms/1/past-messages?page=0&size=10");
         response.then()
                 .statusCode(HttpStatus.OK.value())
                 .log().all();

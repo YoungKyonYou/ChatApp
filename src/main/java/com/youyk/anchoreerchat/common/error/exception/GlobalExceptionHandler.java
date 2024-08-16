@@ -20,7 +20,7 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 public class GlobalExceptionHandler {
     @ExceptionHandler(BaseCustomException.class)
     public ResponseEntity<DataResponse> exception(final BaseCustomException e) {
-        return ResponseEntity.status(e.getHttpStatus())
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(DataResponse.of(DataConstants.NO_DATA.getData(), ErrorResponse.of(e.getCode(), e.getMessage())));
     }
 
