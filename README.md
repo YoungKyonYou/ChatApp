@@ -11,7 +11,7 @@
   - http://localhost:8080/swagger-ui/index.html#/
   2. Swagger Editor 사용
   - resources의 openapi.yaml 를 https://editor.swagger.io/ 에서 import
-  - 
+    
 ### 가정
 - 과거 메시지는 조회는 무한 스크롤 형식으로 진행
   - 가장 최근 메시지를 10개씩 보여주는 방법으로 채팅방에 스크롤을 올리면 보여주는 걸 가정 (카카오톡과 동일)
