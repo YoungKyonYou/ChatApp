@@ -57,9 +57,3 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
-
-test {
-    useJUnit {
-        excludeCategories 'com.youyk.anchoreerchat.websocket;'
-    }
-}

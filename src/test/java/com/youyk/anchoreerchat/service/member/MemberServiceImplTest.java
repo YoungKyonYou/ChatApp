@@ -1,21 +1,20 @@
 package com.youyk.anchoreerchat.service.member;
 
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+
 import com.youyk.anchoreerchat.entity.member.Member;
 import com.youyk.anchoreerchat.repository.member.MemberRepository;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.time.Clock;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class MemberServiceImplTest {
