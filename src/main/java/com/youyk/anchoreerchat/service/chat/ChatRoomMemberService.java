@@ -8,4 +8,5 @@ import org.springframework.data.domain.Slice;
 public interface ChatRoomMemberService {
 
     DataResponse<Slice<ChatMessageDto>> getChatRoomMessages(final PageableRequest pageRequest, final Long roomId);
+    void removeChatRoom(final Long roomId);
 }

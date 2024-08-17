@@ -2,13 +2,12 @@ package com.youyk.anchoreerchat.service.chat;
 
 import com.youyk.anchoreerchat.common.response.DataResponse;
 import com.youyk.anchoreerchat.dto.chat.ChatRoomDto;
-
-import java.time.Clock;
+import com.youyk.anchoreerchat.entity.participant.Participant;
 import java.util.List;
 
 public interface ChatRoomService {
     void createChatRoom(final String roomName, final List<Long> memberIds);
     DataResponse<List<ChatRoomDto>> getChatRoomByRecentLoginMember();
 
-    void removeChatRoom(final Long roomId);
+    DataResponse<List<Participant>> getChatRoomParticipants(Long roomId);
 }

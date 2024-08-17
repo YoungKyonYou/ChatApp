@@ -2,12 +2,18 @@ package com.youyk.anchoreerchat.service.chat;
 
 import com.youyk.anchoreerchat.common.response.DataResponse;
 import com.youyk.anchoreerchat.dto.chat.ChatMessageDto;
+import com.youyk.anchoreerchat.entity.message.Message;
 import com.youyk.anchoreerchat.repository.chat.ChatRoomMemberRepository;
+import com.youyk.anchoreerchat.repository.chat.ChatRoomRepository;
+import com.youyk.anchoreerchat.repository.message.MessageRepository;
+import com.youyk.anchoreerchat.repository.participant.ParticipantRepository;
 import com.youyk.anchoreerchat.request.page.PageableRequest;
 import com.youyk.anchoreerchat.service.cache.MessageCacheService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,7 +21,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ChatRoomMemberServiceImpl implements ChatRoomMemberService {
     private final ChatRoomMemberRepository chatRoomMemberRepository;
+    private final ChatRoomRepository chatRoomRepository;
+    private final ParticipantRepository participantRepository;
     private final MessageCacheService messageCacheService;
+
+    private final MessageRepository messageRepository;
 
     @Transactional(readOnly = true)
     @Override
@@ -34,6 +44,22 @@ public class ChatRoomMemberServiceImpl implements ChatRoomMemberService {
         messageCacheService.cacheSliceMessages(pastMessagesSlice.getContent(), roomId, pastMessagesSlice.hasNext(),
                 pageable);
         return DataResponse.from(pastMessagesSlice);
+    }
+
+
+    @Async
+    @Override
+    public void removeChatRoom(Long roomId) {
+        processDeleteChatRoom(roomId);
+    }
+
+    @Transactional
+    protected void processDeleteChatRoom(Long roomId) {
+        final List<Message> messagesByChatRoomId = chatRoomMemberRepository.findMessageByChatRoomId(roomId);
+        chatRoomMemberRepository.deleteByChatRoomId(roomId);
+        chatRoomRepository.deleteById(roomId);
+        participantRepository.deleteByChatRoomId(roomId);
+        messageRepository.deleteAllInBatch(messagesByChatRoomId);
     }
 
 }

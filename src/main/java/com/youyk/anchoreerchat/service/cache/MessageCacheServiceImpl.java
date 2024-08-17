@@ -5,6 +5,7 @@ import com.youyk.anchoreerchat.dto.chat.ChatMessageDto;
 import com.youyk.anchoreerchat.dto.redis.message.ChatMessageCache;
 import com.youyk.anchoreerchat.dto.redis.message.ChatMessageCacheCollection;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
@@ -60,6 +61,9 @@ public class MessageCacheServiceImpl implements MessageCacheService {
 
         //과거 메시지 캐싱
         redisTemplate.opsForHash().put(messageCacheKey, messageHashKey, cacheMessages);
+
+        // 1시간 TTL 설정
+        redisTemplate.expire(messageCacheKey, 1, TimeUnit.HOURS);
     }
 
     private String getCacheKey(final Long roomId) {
