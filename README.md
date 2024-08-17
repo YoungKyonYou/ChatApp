@@ -23,6 +23,9 @@
   - 카카오톡 처럼 채팅방을 껐다가 다시 키는 행동을 짧은 시간 내에 반복했을 때 지속적으로 DB에 연결해 과거 메시지를 가져오는 것 보다는 캐시에서 빠르게 가져오게 함
 - 채팅방 생성, 삭제 및 메시지 저장 같은 경우 비동기로 실행
 - Kafka를 사용해 메시지 분산처리
+- Exception 코드화 (common/error/exception 패키지)
+- github action으로 develop에 pr를 올릴 때마다 모든 테스트 자동으로 실행
+- Test : e2e, service, repository 테스트 구현
 ### 구성도
 ![image](https://github.com/user-attachments/assets/d4f71322-53c8-4f6f-b8fc-860a9ce781f6)
 
