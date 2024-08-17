@@ -3,7 +3,7 @@
 ### 실행 방법
 - 서버 시작 전 선실행
   - src/main/resources/docker 안에 docker-compose.yml 실행
-    - redis, kafka 도커 이미지로 실행
+    - redis, kafka
 ### API 문서
 - Swagger 사용
 - API 문서 보기
