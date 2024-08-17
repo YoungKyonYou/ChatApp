@@ -77,7 +77,7 @@ public class ChatRoomE2ETest {
         final ChatRoom anchoreerRoom = chatRoomRepository.findByRoomName("Anchoreer").orElseThrow(()->
                 DomainExceptionCode.CHAT_ROOM_NOT_FOUND.newInstance("Anchoreer"));
 
-        final List<Participant> participants = participantRepository.findByChatRoomId(anchoreerRoom.getRoomId());
+        final List<Participant> participants = participantRepository.findParticipantsByChatRoomId(anchoreerRoom.getRoomId());
 
         Assertions.assertArrayEquals(
                 new Long[]{1L, 2L},
