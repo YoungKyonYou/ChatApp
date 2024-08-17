@@ -45,7 +45,7 @@ public class ChatRoomE2ETest {
                 .all()
                 .when()
                 .contentType(ContentType.APPLICATION_JSON.toString())
-                .get("/chats/room/recently-active");
+                .get("/chats/rooms/recently-active");
         response.then()
                 .statusCode(HttpStatus.OK.value())
                 .log().all();

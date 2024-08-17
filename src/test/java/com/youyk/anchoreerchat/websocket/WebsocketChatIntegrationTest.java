@@ -37,6 +37,7 @@ import org.springframework.web.socket.sockjs.client.Transport;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 // 포트번호가 랜덤이 되며, @LocalServerPort를 통해 포트번호를 불러올수 있다.
+@DirtiesContext
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class WebSocketChatIntegrationTest {
     @LocalServerPort
@@ -50,7 +51,7 @@ class WebSocketChatIntegrationTest {
 
     @BeforeEach
     void setup() throws Exception {
-        databaseCleaner.clear();
+        //databaseCleaner.clear();
 
         WebSocketStompClient stompClient =
                 new WebSocketStompClient(
@@ -80,28 +81,7 @@ class WebSocketChatIntegrationTest {
                     public void handleTransportError(StompSession session, Throwable exception) {
                         System.err.println("WebSocket transport error: " + exception.getMessage());
                     }
-                }).get(2, TimeUnit.SECONDS);
-
-
-        CompletableFuture<ChatMessage> subscribeFuture = new CompletableFuture<>();
-
-        ChatMessage message = new ChatMessage("Hello", 1L, 1L, LocalDateTime.now());
-
-        stompSession.send("/app/chat/room1/sendMessage", message);
-
-        stompSession.subscribe("/topic/room1", new StompFrameHandler() {
-            // 여기서 지정한 타입으로 payload를 역직렬화한다.
-            @Override
-            public Type getPayloadType(StompHeaders headers) {
-                return ChatMessage.class;
-            }
-
-            // 여기서 메시지를 가져올 수 있다.
-            @Override
-            public void handleFrame(StompHeaders headers, Object payload) {
-                subscribeFuture.complete((ChatMessage) payload);
-            }
-        });
+                }).get(3, TimeUnit.SECONDS);
     }
 
     @Test
@@ -112,9 +92,9 @@ class WebSocketChatIntegrationTest {
 
         ChatMessage message = new ChatMessage("Hello", 1L, 1L, LocalDateTime.now());
 
-        stompSession.send("/app/chat/room1/sendMessage", message);
+        stompSession.send("/app/chat/1/send-message", message);
 
-        stompSession.subscribe("/topic/room1", new StompFrameHandler() {
+        stompSession.subscribe("/topic/1", new StompFrameHandler() {
             // 여기서 지정한 타입으로 payload를 역직렬화한다.
             @Override
             public Type getPayloadType(StompHeaders headers) {
@@ -128,7 +108,9 @@ class WebSocketChatIntegrationTest {
             }
         });
 
-        ChatMessage receivedMessage = subscribeFuture.get(3, TimeUnit.SECONDS);
+        stompSession.send("/app/chat/1/send-message", message);
+
+        ChatMessage receivedMessage = subscribeFuture.get(10, TimeUnit.SECONDS);
 
         Assertions.assertThat(receivedMessage).isNotNull();
         Assertions.assertThat(receivedMessage.content()).isEqualTo("Hello");

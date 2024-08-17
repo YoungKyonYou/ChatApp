@@ -1,6 +1,9 @@
 package com.youyk.anchoreerchat.config.websocket;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
@@ -25,4 +28,5 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         //web socket connection이 최초로 이루어지는 곳(handshake)
         registry.addEndpoint("/ws-chat").setAllowedOrigins("*").withSockJS();
     }
+
 }

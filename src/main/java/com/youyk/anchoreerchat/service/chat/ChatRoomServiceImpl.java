@@ -7,7 +7,9 @@ import com.youyk.anchoreerchat.entity.participant.Participant;
 import com.youyk.anchoreerchat.repository.chat.ChatRoomRepository;
 import com.youyk.anchoreerchat.repository.participant.ParticipantRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,17 +17,17 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class ChatRoomServiceImpl implements ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final ParticipantRepository participantRepository;
     private final Clock clock;
-    @Transactional
+    @Async
     @Override
     public void createChatRoom(final String roomName, final List<Long> memberIds) {
         //채팅방 생성
-
         final ChatRoom chatRoom = chatRoomRepository.save(ChatRoom.builder().roomName(roomName).build());
 
 
@@ -48,6 +50,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         return DataResponse.from(chatRoomRepository.findChatRoomByMemberLoginDateTimeOrderByMemberCountDesc(thirtyMinutesAgo));
     }
 
+    @Async
     @Override
     public void removeChatRoom(Long roomId) {
         //채팅방 삭제

@@ -1,0 +1,14 @@
+name: 'Install Docker Compose'
+description: 'Installs Docker Compose on the runner'
+inputs:
+  version:
+    description: 'Version of Docker Compose to install'
+    required: true
+    default: '1.29.2'
+runs:
+  using: 'composite'
+  steps:
+    - run: sudo curl -L "https://github.com/docker/compose/releases/download/${{ inputs.version }}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+      shell: bash
+    - run: sudo chmod +x /usr/local/bin/docker-compose
+      shell: bash

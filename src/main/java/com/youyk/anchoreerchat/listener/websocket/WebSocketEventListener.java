@@ -1,15 +1,11 @@
 package com.youyk.anchoreerchat.listener.websocket;
 
-import com.youyk.anchoreerchat.entity.chat.ChatMessage;
 import com.youyk.anchoreerchat.entity.member.Member;
 import com.youyk.anchoreerchat.service.member.MemberService;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
@@ -20,7 +16,6 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 @Component
 public class WebSocketEventListener {
 
-    private final SimpMessageSendingOperations messagingTemplate;
     private final MemberService memberService;
 
     @EventListener
@@ -34,10 +29,6 @@ public class WebSocketEventListener {
 
         Long memberId = (Long) headerAccessor.getSessionAttributes().get("memberId");
         Member member = memberService.findById(memberId);
-        if(Objects.nonNull(member)) {
-            //   ChatMessage chatMessage = new ChatMessage("USER LEAVED", member, MessageType.LEAVE);
 
-            // messagingTemplate.convertAndSend("/topic/public", chatMessage);
-        }
     }
 }
