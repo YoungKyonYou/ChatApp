@@ -6,7 +6,11 @@
     - redis, kafka 도커 이미지로 실행
 ### API 문서
 - Swagger 사용
-- [Uploading openapi.yaml…]()openapi: 3.0.1
+- API 문서 보기
+  1. 접속 url (서버 실행 후)
+  - http://localhost:8080/swagger-ui/index.html#/
+  2. Swagger Editor 사용
+  - resources의 openapi.yaml 를 https://editor.swagger.io/ 에서 import
 info:
   title: Chat App Project Springdoc
   description: Chat App Project Swagger UI
