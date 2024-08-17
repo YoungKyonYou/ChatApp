@@ -8,9 +8,9 @@
 - Swagger 사용
 - API 문서 보기
   1. 접속 url (서버 실행 후)
-  - http://localhost:8080/swagger-ui/index.html#/
+   - http://localhost:8080/swagger-ui/index.html#/
   2. Swagger Editor 사용
-  - resources의 openapi.yaml 를 https://editor.swagger.io/ 에서 import
+   - src/main/resources/swagger 안에 openapi.yaml 를 https://editor.swagger.io/ 에서 import
     
 ### 가정
 - 과거 메시지는 조회는 무한 스크롤 형식으로 진행
