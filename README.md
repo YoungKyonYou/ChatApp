@@ -13,7 +13,7 @@
    - src/main/resources/swagger 안에 openapi.yaml 를 https://editor.swagger.io/ 에서 import
     
 ### 가정
--채팅 목록의 해당 채팅방의 가장 최근 메시지를 조회하는 API의 경우 무한 스크롤 형식으로 진행 (Slice 사용)
+- 채팅 목록의 해당 채팅방의 가장 최근 메시지를 조회하는 API의 경우 무한 스크롤 형식으로 진행 (Slice 사용)
   - 가장 최근 메시지를 10개씩 보여주는 방법으로 채팅방에 스크롤을 올리면 보여주는 걸 가정 (카카오톡과 동일)
 - seeding sql (data.sql)이 자동으로 실행됨으로 서버 실행 시 데이터가 들어감 (src/main/resources data.sql 참고)
 
