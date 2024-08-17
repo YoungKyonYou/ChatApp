@@ -18,6 +18,7 @@
 - seeding sql (data.sql)이 자동으로 실행됨으로 서버 실행 시 데이터가 들어감 (src/main/resources data.sql 참고)
 
 ### 구현
+- 채팅 구현으로 websocket 사용
 - 사용자가 특정 채팅방에 접속했을 때 최근 메시지 10개씩 redis에 캐싱
   - 모든 과거 메시지를 캐싱하지 않음 (사용자가 스크롤링하면서 10개씩 보여질 때마다 각 10개 세트를 캐싱)
   - TTL를 1시간으로 설정 (1시간 뒤에 캐시가 사라짐)
@@ -27,6 +28,21 @@
 - Exception 코드화 (common/error/exception 패키지)
 - github action으로 develop에 pr를 올릴 때마다 모든 테스트 자동으로 실행
 - Test : e2e, service, repository 테스트 구현
+
+### 사용 기술 스택
+- Springboot 3.3.2
+- Java 17
+- Gradle
+- JPA
+- QueryDsl
+- H2 Inmemory DB
+- Redis
+- Kafka
+- Websocket
+- Docker Compose
+- Github Action
+- Swagger
+  
 ### 구성도
 ![image](https://github.com/user-attachments/assets/d4f71322-53c8-4f6f-b8fc-860a9ce781f6)
 
