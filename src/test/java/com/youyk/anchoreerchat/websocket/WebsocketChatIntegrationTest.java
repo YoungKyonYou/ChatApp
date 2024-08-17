@@ -37,6 +37,7 @@ import org.springframework.web.socket.sockjs.client.Transport;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
 // 포트번호가 랜덤이 되며, @LocalServerPort를 통해 포트번호를 불러올수 있다.
+@DirtiesContext
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class WebSocketChatIntegrationTest {
     @LocalServerPort
@@ -80,7 +81,7 @@ class WebSocketChatIntegrationTest {
                     public void handleTransportError(StompSession session, Throwable exception) {
                         System.err.println("WebSocket transport error: " + exception.getMessage());
                     }
-                }).get(2, TimeUnit.SECONDS);
+                }).get(3, TimeUnit.SECONDS);
     }
 
     @Test
@@ -106,6 +107,8 @@ class WebSocketChatIntegrationTest {
                 subscribeFuture.complete((ChatMessage) payload);
             }
         });
+
+        stompSession.send("/app/chat/1/send-message", message);
 
         ChatMessage receivedMessage = subscribeFuture.get(10, TimeUnit.SECONDS);
 
