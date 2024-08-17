@@ -1,21 +1,19 @@
 package com.youyk.anchoreerchat.service.chat;
 
+import com.youyk.anchoreerchat.common.error.exception.DomainExceptionCode;
 import com.youyk.anchoreerchat.common.response.DataResponse;
 import com.youyk.anchoreerchat.dto.chat.ChatRoomDto;
 import com.youyk.anchoreerchat.entity.chat.ChatRoom;
 import com.youyk.anchoreerchat.entity.participant.Participant;
 import com.youyk.anchoreerchat.repository.chat.ChatRoomRepository;
 import com.youyk.anchoreerchat.repository.participant.ParticipantRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -29,7 +27,6 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     public void createChatRoom(final String roomName, final List<Long> memberIds) {
         //채팅방 생성
         final ChatRoom chatRoom = chatRoomRepository.save(ChatRoom.builder().roomName(roomName).build());
-
 
         final List<Participant> participants = memberIds.stream()
                 .map(m -> Participant.builder()
@@ -47,14 +44,23 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         //현재 시간으로부터 30분 전
         final LocalDateTime thirtyMinutesAgo = LocalDateTime.now(clock).minusMinutes(30);
         //30분 내에 접속한 사용자 수의 내림차순으로 채팅 목록 정렬
-        return DataResponse.from(chatRoomRepository.findChatRoomByMemberLoginDateTimeOrderByMemberCountDesc(thirtyMinutesAgo));
+        final List<ChatRoomDto> chatRooms = chatRoomRepository.findChatRoomByMemberLoginDateTimeOrderByMemberCountDesc(
+                thirtyMinutesAgo);
+
+        if(chatRooms.isEmpty()){
+            throw DomainExceptionCode.CHAT_ROOM_NOT_FOUND.newInstance("30분 내에 접속한 사용자가 없습니다.");
+        }
+
+        return DataResponse.from(chatRooms);
     }
 
-    @Async
     @Override
-    public void removeChatRoom(Long roomId) {
-        //채팅방 삭제
-        chatRoomRepository.deleteById(roomId);
-        participantRepository.deleteByChatRoomId(roomId);
+    public DataResponse<List<Participant>> getChatRoomParticipants(final Long roomId) {
+        final List<Participant> participants = participantRepository.findParticipantsByChatRoomId(roomId);
+        if(participants.isEmpty()){
+            throw DomainExceptionCode.PARTICIPANT_NOT_FOUND.newInstance(roomId);
+        }
+        return DataResponse.from(participants);
     }
+
 }
