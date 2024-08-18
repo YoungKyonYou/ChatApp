@@ -31,7 +31,7 @@
 - WebSocketListener를 통해 connetion이 맺혀지거나 끊겼을 때 event 추척
 - WebSocketInterceptor를 통해 구독 시 채팅방의 사용자들을 캐싱 또는 구독 해제 시 캐시 삭제를 통해 채팅방의 사용자가 메시지 송신 시 채팅방의 속한 사용자만이 특정 구독 URL를 통해 메시지 송신 가능하게 함
 - Websocket 테스트 (WebScoketChatIntegrationTest.java)로 실제 메시지 송신 테스트 가능
-  - Apic 웹사이트(https://apic.app/online/#/tester)로 테스트 시 WebSocketConfig.java의 ".withSocket()" 제거 필요
+  - Apic 웹사이트(https://apic.app/online/#/tester) 로 테스트 시 WebSocketConfig.java의 ".withSocket()" 제거 필요
 
 ### 사용 기술 스택
 - Springboot 3.3.2
