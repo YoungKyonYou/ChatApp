@@ -52,6 +52,7 @@
 ![image](https://github.com/user-attachments/assets/d4f71322-53c8-4f6f-b8fc-860a9ce781f6)
 
 ### 테이블 구성도
+- 논리적 외래키 사용
 
 ![image](https://github.com/user-attachments/assets/7a4d9b25-6356-46f6-b200-0c431635c7bc)
 
