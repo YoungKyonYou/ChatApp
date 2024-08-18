@@ -8,7 +8,7 @@ import com.youyk.anchoreerchat.repository.chat.ChatRoomRepository;
 import com.youyk.anchoreerchat.repository.message.MessageRepository;
 import com.youyk.anchoreerchat.repository.participant.ParticipantRepository;
 import com.youyk.anchoreerchat.request.page.PageableRequest;
-import com.youyk.anchoreerchat.service.cache.MessageCacheService;
+import com.youyk.anchoreerchat.service.cache.message.MessageCacheService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;

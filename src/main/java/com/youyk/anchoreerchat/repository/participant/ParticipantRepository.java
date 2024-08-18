@@ -13,6 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 public interface ParticipantRepository extends JpaRepository<Participant, Long> {
 
     List<Participant> findParticipantsByChatRoomId(final Long roomId);
+
+    @Query("SELECT p.memberId FROM Participant p WHERE p.chatRoomId = :roomId")
+    List<Long> findMemberIdByChatRoomId(final Long roomId);
+
     @Modifying
     @Transactional
     @Query("DELETE FROM Participant p WHERE p.chatRoomId = :roomId")

@@ -1,17 +1,20 @@
 package com.youyk.anchoreerchat.config.websocket;
 
-import org.springframework.context.annotation.Bean;
+import com.youyk.anchoreerchat.interceptor.websocket.WebSocketInterceptor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
+@RequiredArgsConstructor
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+    private final WebSocketInterceptor interceptor;
+
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         // topic과 /queue로 시작하는 대상에 대한 메시지를 처리하도록 설정
@@ -27,6 +30,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         //web socket connection이 최초로 이루어지는 곳(handshake)
         registry.addEndpoint("/ws-chat").setAllowedOrigins("*").withSockJS();
+    }
+
+    @Override
+    public void configureClientInboundChannel(ChannelRegistration registration) {
+        registration.interceptors(interceptor);
     }
 
 }
