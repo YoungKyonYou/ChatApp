@@ -28,6 +28,8 @@
 - Exception 코드화 (common/error/exception 패키지)
 - github action으로 develop에 pr를 올릴 때마다 모든 테스트 자동으로 실행
 - Test : e2e, service, repository 테스트 구현
+- WebSocketListener를 통해 connetion이 맺혀지거나 끊겼을 때 event 추척
+- WebSocketInterceptor를 통해 구독 시 채팅방의 사용자들을 캐싱 또는 구독 해제 시 캐시 삭제를 통해 채팅방의 사용자가 메시지 송신 시 채팅방의 속한 사용자만이 특정 구독 URL를 통해 메시지 송신 가능하게 함
 
 ### 사용 기술 스택
 - Springboot 3.3.2
