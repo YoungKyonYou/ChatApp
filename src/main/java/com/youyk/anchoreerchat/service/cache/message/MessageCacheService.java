@@ -1,4 +1,4 @@
-package com.youyk.anchoreerchat.service.cache;
+package com.youyk.anchoreerchat.service.cache.message;
 
 import com.youyk.anchoreerchat.dto.chat.ChatMessageDto;
 import java.util.List;
