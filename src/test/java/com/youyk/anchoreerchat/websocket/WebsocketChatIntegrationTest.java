@@ -79,9 +79,8 @@ class WebSocketChatIntegrationTest {
 
         ChatMessage message = new ChatMessage("Hello", 1L, 1L, LocalDateTime.now());
 
-        stompSession.send("/app/chat/1/send-message", message);
 
-        stompSession.subscribe("/topic/1", new StompFrameHandler() {
+        stompSession.subscribe("/topic/chat/1/send-message", new StompFrameHandler() {
             // 여기서 지정한 타입으로 payload를 역직렬화한다.
             @Override
             public Type getPayloadType(StompHeaders headers) {
@@ -94,7 +93,7 @@ class WebSocketChatIntegrationTest {
                 subscribeFuture.complete((ChatMessage) payload);
             }
         });
-
+        stompSession.send("/topic/chat/1/send-message", message);
 
         ChatMessage receivedMessage = subscribeFuture.get(10, TimeUnit.SECONDS);
 
