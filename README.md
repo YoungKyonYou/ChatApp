@@ -16,6 +16,7 @@
 - 채팅 목록의 해당 채팅방의 가장 최근 메시지를 조회하는 API의 경우 무한 스크롤 형식으로 진행 (Slice 사용)
   - 가장 최근 메시지를 10개씩 보여주는 방법으로 채팅방에 스크롤을 올리면 보여주는 걸 가정 (카카오톡과 동일)
 - seeding sql (data.sql)이 자동으로 실행됨으로 서버 실행 시 데이터가 들어감 (src/main/resources data.sql 참고)
+- 논리적 외래키 사용
 
 ### 구현
 - 채팅 구현으로 websocket 사용
@@ -49,4 +50,8 @@
   
 ### 구성도
 ![image](https://github.com/user-attachments/assets/d4f71322-53c8-4f6f-b8fc-860a9ce781f6)
+
+### 테이블 구성도
+
+![image](https://github.com/user-attachments/assets/7a4d9b25-6356-46f6-b200-0c431635c7bc)
 
