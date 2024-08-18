@@ -1,5 +1,8 @@
  # 백엔드 과제
 
+### 소스 Branch 
+- master 또는 develop 브랜치 
+
 ### 실행 방법
 - 서버 시작 전 선실행
   - src/main/resources/docker 안에 docker-compose.yml 실행
