@@ -1,4 +1,4 @@
- # 백엔드 과제
+ # 채팅 백엔드
 
 ### 소스 Branch 
 - master 또는 develop 브랜치 
